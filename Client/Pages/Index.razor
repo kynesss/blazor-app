@@ -1,7 +1,16 @@
 ﻿@page "/"
 
+@using Microsoft.AspNetCore.Components.Authorization
+
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, Bald Mushroom!</h1>
-
-Sign in to add new announcement!
+<AuthorizeView>
+    <Authorized>
+        <h1>Hello, @context.User.Identity.Name!</h1>
+                    You are logged in!
+    </Authorized>
+    <NotAuthorized>
+        <h1>Hello, Guest!</h1>
+            Sign in to add new announcement!
+    </NotAuthorized>
+</AuthorizeView>

@@ -1,0 +1,56 @@
+﻿@page "/announcements"
+@inject HttpClient Http
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<h3>Add custom announcement</h3>
+
+<div class="center">
+    <label for="inputValue">URL:</label>
+    <input type="text" id="inputValue" @bind="@InputValue"/>
+
+    <br />
+    <br />
+    
+    <button @onclick="AddAnnouncement">Add Announcement</button>
+    
+    <br />
+</div>
+
+@if (!string.IsNullOrEmpty(Result))
+{
+    <p>Result: @Result</p>
+}
+
+@code {
+    private readonly HttpClient _httpClient = new();
+    
+    private static string? InputValue { get; set; }
+    private string? Result { get; set; }
+
+    private async Task AddAnnouncement()
+    {
+        if (string.IsNullOrEmpty(InputValue))
+            return;
+
+        try
+        {
+            var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"http://localhost:7071/api/CustomMediaPostsTrigger?url={InputValue}");
+            
+            var response = await _httpClient.SendAsync(httpRequest);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                Result = responseContent;
+            }
+            else
+                Result = "Error: " + response.StatusCode;
+        }
+        catch (Exception ex)
+        {
+            Result = "Error: " + ex.Message;
+        }
+    }
+
+}

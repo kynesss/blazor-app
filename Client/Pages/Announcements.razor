@@ -30,7 +30,7 @@
 
     private async Task AddAnnouncement()
     {
-        var response = await HttpClient.GetStringAsync($"api/functions/CustomMediaPostsTrigger?url={InputValue}");
+        var response = await HttpClient.GetStringAsync($"Api/functions/CustomMediaPostsTrigger?url={InputValue}");
         Result = response;
     }
 }

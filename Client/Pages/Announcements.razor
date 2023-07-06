@@ -1,7 +1,7 @@
 ﻿@page "/announcements"
-@inject HttpClient Http
+@inject HttpClient HttpClient
 @using Microsoft.AspNetCore.Authorization
-@attribute [Authorize(Roles = "admin")]
+
 
 <h3>Add custom announcement</h3>
 
@@ -23,34 +23,14 @@
 }
 
 @code {
-    private readonly HttpClient _httpClient = new();
-    
     private static string? InputValue { get; set; }
     private string? Result { get; set; }
+    
+   //@attribute [Authorize(Roles = "admin")]
 
     private async Task AddAnnouncement()
     {
-        if (string.IsNullOrEmpty(InputValue))
-            return;
-
-        try
-        {
-            var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"http://localhost:7071/api/CustomMediaPostsTrigger?url={InputValue}");
-            
-            var response = await _httpClient.SendAsync(httpRequest);
-            
-            if (response.IsSuccessStatusCode)
-            {
-                var responseContent = await response.Content.ReadAsStringAsync();
-                Result = responseContent;
-            }
-            else
-                Result = "Error: " + response.StatusCode;
-        }
-        catch (Exception ex)
-        {
-            Result = "Error: " + ex.Message;
-        }
+        var response = await HttpClient.GetStringAsync($"api/functions/CustomMediaPostsTrigger?url={InputValue}");
+        Result = response;
     }
-
 }

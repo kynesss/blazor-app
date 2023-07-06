@@ -18,7 +18,7 @@ public static class CustomMediaPostsTrigger
     private static ICustomMediaClient _mediaClient;
 
     [FunctionName("CustomMediaPostsTrigger")]
-    public static async Task<IActionResult> RunAsync([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "functions/CustomMediaPostsTrigger")] HttpRequest req, ILogger log, ClaimsPrincipal principal)
+    public static async Task<IActionResult> RunAsync([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req, ILogger log, ClaimsPrincipal principal)
     {
         if (principal.Identity is { IsAuthenticated: false })
         {

@@ -11,24 +11,21 @@ namespace ApiIsolated;
 public static class AnnouncementFunction
 {
     private static HttpClient _httpClient;
-
-    private const string FunctionUrl = "http://localhost:7071/api/CustomMediaPostsTrigger";
-
+    
     [Function("AnnouncementFunction")]
     public static async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req,
         FunctionContext executionContext)
     {
         _httpClient = new HttpClient();
-
-        var announcementUrl = await req.ReadAsStringAsync();
-
-        if (string.IsNullOrEmpty(announcementUrl))
-            return req.CreateResponse(HttpStatusCode.BadRequest);
         
-        var urlWithQuery = $"{FunctionUrl}?url={Uri.EscapeDataString(announcementUrl)}";
+        var functionUrl = "http://localhost:7071/api/CustomMediaPostsTrigger";
+        //var queryParameter = await req.ReadAsStringAsync();
+        var urlWithQuery = $"{functionUrl}?url={Uri.EscapeDataString("https://przegladsportowy.onet.pl/tenis/wimbledon/najtrudniejszy-test-hurkacza-dogrywka-oto-jak-pokonac-djokovicia/w2vjgfj")}";
 
-        HttpContent content = new StringContent(urlWithQuery);
-        await _httpClient.PostAsync(FunctionUrl, content);
+        //if (string.IsNullOrEmpty(queryParameter))
+          //  return req.CreateResponse(HttpStatusCode.BadRequest);
+        
+        await _httpClient.GetAsync(urlWithQuery);
 
         return req.CreateResponse(HttpStatusCode.OK);
     }

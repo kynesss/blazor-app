@@ -17,7 +17,6 @@ public static class AnnouncementFunction
     public static async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req,
         FunctionContext executionContext)
     {
-        //url jest nullem dlatego nie dziala
         _httpClient = new HttpClient();
 
         var logger = executionContext.GetLogger("AnnouncementFunction");

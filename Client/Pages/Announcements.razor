@@ -20,11 +20,13 @@
 @if (!string.IsNullOrEmpty(Result))
 {
     <p>Result: @Result</p>
+    <p>Status Code: @StatusCode</p>
 }
 
 @code {
     
     private static string? InputValue { get; set; }
+    private string? StatusCode { get; set; }
     private string? Result { get; set; }
 
     private async Task AddAnnouncement()
@@ -36,7 +38,8 @@
             HttpContent requestBody = new StringContent($"${{\"url\": \"{InputValue}\"}}");
             var response = await Http.PostAsync("/api/AnnouncementFunction", requestBody);
 
-            Result = response.StatusCode.ToString();
+            Result = response.Content.ToString();
+            StatusCode = response.StatusCode.ToString();
         }
         catch (Exception ex)
         {

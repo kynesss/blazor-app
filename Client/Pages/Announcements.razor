@@ -45,9 +45,9 @@
         try
         {
             HttpContent requestBody = new StringContent($"${{\"url\": \"{InputValue}\"}}");
-            var response = await Http.PostAsync("/api/AnnouncementFunction", requestBody);
+            var response = await Http.GetStringAsync($"/api/AnnouncementFunction?url={InputValue}");
 
-            Result = response.StatusCode.ToString();
+            Result = response.ToString();
         }
         catch (Exception ex)
         {

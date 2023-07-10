@@ -20,7 +20,7 @@ public static class AnnouncementFunction
         
         var functionUrl = "https://newsfeedfunctions.azurewebsites.net/api/CustomMediaPostsTrigger?";
         var queryParameter = "https://przegladsportowy.onet.pl/tenis/wimbledon/najtrudniejszy-test-hurkacza-dogrywka-oto-jak-pokonac-djokovicia/w2vjgfj";
-        var urlWithQuery = $"{functionUrl}?url={Uri.EscapeDataString(queryParameter)}";
+        var urlWithQuery = $"{functionUrl}url={Uri.EscapeDataString(queryParameter)}";
         
         var response = await _httpClient.GetAsync(urlWithQuery);
         

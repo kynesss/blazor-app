@@ -10,23 +10,34 @@
     <label for="inputValue">URL:</label>
     <input type="text" id="inputValue" @bind="@InputValue"/>
 
-    <br/>
-    <br/>
-
+    <br/><br/>
+    
     <button @onclick="AddAnnouncement" disabled="@IsRunning">Add Announcement</button>
-
-    <br/>
+    
+    <br/><br/>
 </div>
 
 @if (!string.IsNullOrEmpty(Result))
 {
-    <p>Result: @Result</p>
+    if (IsRunning)
+    {
+        <p color="black"> Result: Running</p>
+    }
+    else if (IsSuccess)
+    {
+        <p color="green">Result: @Result</p>
+    }
+    else
+    {
+        <p color="red">Result: @Result</p>
+    }
 }
 
 @code {
     private static string? InputValue { get; set; }
     private string? Result { get; set; }
     private bool IsRunning { get; set; }
+    private bool IsSuccess { get; set; }
 
     private async Task AddAnnouncement()
     {
@@ -47,7 +58,7 @@
             IsRunning = true;
             await Http.GetStringAsync($"/api/AnnouncementFunction?url={InputValue}");
             IsRunning = false;
-            
+
             LogSuccess("Announcement has been sent successfully!");
         }
         catch (Exception ex)
@@ -58,12 +69,14 @@
 
     private void LogError(string message)
     {
-        Result = $"<color=red>{message}</color>";
+        IsSuccess = false;
+        Result = message;
     }
 
     private void LogSuccess(string message)
     {
-        Result = $"<color=green>{message}</color>";
+        IsSuccess = true;
+        Result = message;
     }
 
 }

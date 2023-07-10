@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Azure.Functions.Worker;
@@ -11,7 +12,7 @@ public static class AnnouncementFunction
 {
     private static HttpClient _httpClient;
 
-    private const string FunctionUrl = "http://localhost:7071/api/CustomMediaPostsTrigger?url=";
+    private const string FunctionUrl = "http://localhost:7071/api/CustomMediaPostsTrigger";
 
     [Function("AnnouncementFunction")]
     public static async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req,
@@ -26,10 +27,10 @@ public static class AnnouncementFunction
 
         if (string.IsNullOrEmpty(announcementUrl))
             return req.CreateResponse(HttpStatusCode.BadRequest);
-
-        var url = FunctionUrl + announcementUrl;
-        await _httpClient.PostAsync(url, null);
-
+        
+        var urlWithQuery = $"{FunctionUrl}?url={Uri.EscapeDataString(announcementUrl)}";
+        await _httpClient.GetAsync(urlWithQuery);
+        
         return req.CreateResponse(HttpStatusCode.OK);
     }
 }

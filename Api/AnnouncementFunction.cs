@@ -20,12 +20,13 @@ public static class AnnouncementFunction
         
         var functionUrl = "http://localhost:7071/api/CustomMediaPostsTrigger";
         //var queryParameter = await req.ReadAsStringAsync();
-        var urlWithQuery = $"{functionUrl}?url={Uri.EscapeDataString("https://przegladsportowy.onet.pl/tenis/wimbledon/najtrudniejszy-test-hurkacza-dogrywka-oto-jak-pokonac-djokovicia/w2vjgfj")}";
+        var queryParameter = "https://przegladsportowy.onet.pl/tenis/wimbledon/najtrudniejszy-test-hurkacza-dogrywka-oto-jak-pokonac-djokovicia/w2vjgfj";
+        var urlWithQuery = $"{functionUrl}?url={Uri.EscapeDataString(queryParameter)}";
 
         //if (string.IsNullOrEmpty(queryParameter))
           //  return req.CreateResponse(HttpStatusCode.BadRequest);
         
-        await _httpClient.GetAsync(urlWithQuery);
+        var response = await _httpClient.GetAsync(urlWithQuery);
 
         return req.CreateResponse(HttpStatusCode.OK);
     }

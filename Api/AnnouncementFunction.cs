@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
+using Newtonsoft.Json;
 
 namespace ApiIsolated;
 
@@ -17,8 +18,11 @@ public static class AnnouncementFunction
         FunctionContext executionContext)
     {
         _httpClient = new HttpClient();
+
+        var requestBody = await req.ReadAsStringAsync();
+        dynamic requestModel = JsonConvert.DeserializeObject(requestBody);
+        var queryParameter = requestModel.url;
         
-        var queryParameter = await req.ReadAsStringAsync();
         var urlWithQuery = $"{FunctionUrl}url={Uri.EscapeDataString(queryParameter)}";
         
         var response = await _httpClient.GetAsync(urlWithQuery);

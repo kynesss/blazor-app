@@ -49,33 +49,34 @@
 
         if (!Utils.IsUrlValid(InputValue))
         {
-            LogError("Give url is not valid!");
+            LogError("Given url is not valid!");
             return;
         }
 
         try
         {
             IsRunning = true;
-            var response = await Http.GetStringAsync($"/api/AnnouncementFunction?url={InputValue}");
-            IsRunning = false;
-
-            LogResponse(response);
+            await Http.GetStringAsync($"/api/AnnouncementFunction?url={InputValue}");
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.ToString());
             LogError(ex.ToString());
         }
+        
+        LogResponse("Announcement has been sent successfully!");
     }
 
     private void LogError(string message)
     {
+        IsRunning = false;
         IsSuccess = false;
         Result = message;
     }
 
     private void LogResponse(string message)
     {
+        IsRunning = false;
         IsSuccess = true;
         Result = message;
     }

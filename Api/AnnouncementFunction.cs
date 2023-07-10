@@ -11,6 +11,8 @@ public static class AnnouncementFunction
 {
     private static HttpClient _httpClient;
 
+    private const string FunctionUrl = "http://localhost:7071/api/CustomMediaPostsTrigger?url=";
+
     [Function("AnnouncementFunction")]
     public static async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req,
         FunctionContext executionContext)
@@ -21,15 +23,13 @@ public static class AnnouncementFunction
         var logger = executionContext.GetLogger("AnnouncementFunction");
         logger.LogInformation("C# HTTP trigger function processed a request.");
         
-        var url = await req.ReadAsStringAsync();
+        var announcementUrl = await req.ReadAsStringAsync();
 
-        if (string.IsNullOrEmpty(url))
-        {
-            // Handle the case when "url" parameter is missing or empty
+        if (string.IsNullOrEmpty(announcementUrl))
             return req.CreateResponse(HttpStatusCode.BadRequest);
-        }
 
-        // Continue with your logic using the "url" parameter value
+        var url = FunctionUrl + announcementUrl;
+        await _httpClient.PostAsync(url, null);
 
         return req.CreateResponse(HttpStatusCode.OK);
     }

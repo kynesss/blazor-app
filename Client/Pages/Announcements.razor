@@ -21,15 +21,15 @@
 {
     if (IsRunning)
     {
-        <p color="black"> Result: Running</p>
+        <p style="color: black">Result: Running</p>
     }
     else if (IsSuccess)
     {
-        <p color="green">Result: @Result</p>
+        <p style="color: green">Result: @Result</p>
     }
     else
     {
-        <p color="red">Result: @Result</p>
+        <p style="color: red">Result: @Result</p>
     }
 }
 
@@ -56,14 +56,15 @@
         try
         {
             IsRunning = true;
-            await Http.GetStringAsync($"/api/AnnouncementFunction?url={InputValue}");
+            var response = await Http.GetStringAsync($"/api/AnnouncementFunction?url={InputValue}");
             IsRunning = false;
 
-            LogSuccess("Announcement has been sent successfully!");
+            LogResponse(response);
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.ToString());
+            LogError(ex.ToString());
         }
     }
 
@@ -73,7 +74,7 @@
         Result = message;
     }
 
-    private void LogSuccess(string message)
+    private void LogResponse(string message)
     {
         IsSuccess = true;
         Result = message;

@@ -22,6 +22,12 @@ public static class AnnouncementFunction
         var urlWithQuery = $"{FunctionUrl}url={url}";
         
         var response = await _httpClient.GetAsync(urlWithQuery);
-        return req.CreateResponse(response.StatusCode);
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        var httpResponse = req.CreateResponse(response.StatusCode);
+        httpResponse.Headers.Add("Content-Type", "application/json; charset=utf-8");
+        await httpResponse.WriteStringAsync(responseContent);
+
+        return httpResponse;
     }
 }

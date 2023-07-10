@@ -19,15 +19,14 @@ public static class AnnouncementFunction
         _httpClient = new HttpClient();
         
         var functionUrl = "http://localhost:7071/api/CustomMediaPostsTrigger";
-        //var queryParameter = await req.ReadAsStringAsync();
         var queryParameter = "https://przegladsportowy.onet.pl/tenis/wimbledon/najtrudniejszy-test-hurkacza-dogrywka-oto-jak-pokonac-djokovicia/w2vjgfj";
         var urlWithQuery = $"{functionUrl}?url={Uri.EscapeDataString(queryParameter)}";
-
-        //if (string.IsNullOrEmpty(queryParameter))
-          //  return req.CreateResponse(HttpStatusCode.BadRequest);
         
         var response = await _httpClient.GetAsync(urlWithQuery);
-
-        return req.CreateResponse(HttpStatusCode.OK);
+        
+        Console.WriteLine($"Response status code: {response.StatusCode}");
+        Console.WriteLine($"Response content: {await response.Content.ReadAsStringAsync()}");
+        
+        return req.CreateResponse(response.StatusCode);
     }
 }

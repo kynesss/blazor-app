@@ -15,22 +15,37 @@ public static class AnnouncementFunction
     private const string FunctionUrl = "http://localhost:7071/api/CustomMediaPostsTrigger";
 
     [Function("AnnouncementFunction")]
-    public static async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req,
-        FunctionContext executionContext)
+    public static async Task<HttpResponseData> Run(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")]
+        HttpRequestData req, FunctionContext executionContext)
     {
-        _httpClient = new HttpClient();
+        HttpClient client = new HttpClient();
 
-        var logger = executionContext.GetLogger("AnnouncementFunction");
-        logger.LogInformation("C# HTTP trigger function processed a request.");
-        
-        var announcementUrl = await req.ReadAsStringAsync();
+        string functionUrl = "http://localhost:7071/api/CustomMediaPostsTrigger";
+        string queryParameter =
+            "https://www.onet.pl/informacje/onetwiadomosci/rzez-wolynska-kleska-dyplomatyczna-i-moralna-andrzeja-dudy/dtztlx3,79cfc278";
+        string urlWithQuery = $"{functionUrl}?url={Uri.EscapeDataString(queryParameter)}";
 
-        if (string.IsNullOrEmpty(announcementUrl))
-            return req.CreateResponse(HttpStatusCode.BadRequest);
-        
-        var urlWithQuery = $"{FunctionUrl}?url={Uri.EscapeDataString(announcementUrl)}";
-        await _httpClient.GetAsync(urlWithQuery);
-        
+        try
+        {
+            HttpResponseMessage response = await client.GetAsync(urlWithQuery);
+            response.EnsureSuccessStatusCode();
+            string responseContent = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(responseContent);
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"Request failed with exception: {ex.Message}");
+            if (ex.InnerException != null)
+            {
+                Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
+
         return req.CreateResponse(HttpStatusCode.OK);
     }
 }

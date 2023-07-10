@@ -1,7 +1,6 @@
 ﻿@page "/announcements"
 @inject HttpClient Http
 @using Microsoft.AspNetCore.Authorization
-@attribute [Authorize(Roles = "admin")]
 
 <h3>Add custom announcement</h3>
 
@@ -25,6 +24,7 @@
 
 @code {
     
+//@attribute [Authorize(Roles = "admin")]
     private static string? InputValue { get; set; }
     private string? StatusCode { get; set; }
     private string? Result { get; set; }

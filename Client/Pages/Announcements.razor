@@ -2,6 +2,7 @@
 @inject HttpClient Http
 @using Utils;
 @using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "admin")]
 
 <h3>Add custom announcement</h3>
 
@@ -9,12 +10,12 @@
     <label for="inputValue">URL:</label>
     <input type="text" id="inputValue" @bind="@InputValue"/>
 
-    <br />
-    <br />
-    
-    <button @onclick="AddAnnouncement">Add Announcement</button>
-    
-    <br />
+    <br/>
+    <br/>
+
+    <button @onclick="AddAnnouncement" disabled="@IsRunning">Add Announcement</button>
+
+    <br/>
 </div>
 
 @if (!string.IsNullOrEmpty(Result))
@@ -23,36 +24,46 @@
 }
 
 @code {
-    
-//@attribute [Authorize(Roles = "admin")]
     private static string? InputValue { get; set; }
     private string? Result { get; set; }
+    private bool IsRunning { get; set; }
 
     private async Task AddAnnouncement()
     {
         if (string.IsNullOrEmpty(InputValue))
         {
-            Result = "Given url is empty!";
+            LogError("Given url is empty!");
             return;
         }
 
         if (!Utils.IsUrlValid(InputValue))
         {
-            Result = "Give url is not valid!";
+            LogError("Give url is not valid!");
             return;
         }
 
         try
         {
-            HttpContent requestBody = new StringContent($"${{\"url\": \"{InputValue}\"}}");
-            var response = await Http.GetStringAsync($"/api/AnnouncementFunction?url={InputValue}");
-
-            Result = response.ToString();
+            IsRunning = true;
+            await Http.GetStringAsync($"/api/AnnouncementFunction?url={InputValue}");
+            IsRunning = false;
+            
+            LogSuccess("Announcement has been sent successfully!");
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.ToString());
         }
+    }
+
+    private void LogError(string message)
+    {
+        Result = $"<color=red>{message}</color>";
+    }
+
+    private void LogSuccess(string message)
+    {
+        Result = $"<color=green>{message}</color>";
     }
 
 }
